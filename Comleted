@@ -1,0 +1,483 @@
+package numbers;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+//        write your code here
+        Scanner scanner = new Scanner(System.in);
+        String temPor = null;
+        long firstNum = 0;
+        long secondNum = 0;
+        boolean stopB = true;
+        System.out.println("Welcome to Amazing Numbers!");
+        System.out.println(" ");
+        System.out.println("Supported requests: ");
+        System.out.println("- enter a natural number to know its properties; ");
+        System.out.println("- enter two natural numbers to obtain the properties of the list:");
+        System.out.println("  * the first parameter represents a starting number;");
+        System.out.println("  * the second parameter shows how many consecutive numbers are to be printed;");
+        System.out.println("- two natural numbers and two properties to search for;");
+        System.out.println("- a property preceded by minus must not be present in number;");
+        System.out.println("- separate the parameters with one space;");
+        System.out.println("- enter 0 to exit.");
+
+        do {
+            System.out.println(" ");
+            System.out.print("Enter a request: ");
+            String value = scanner.nextLine();
+            String[] parts = value.split(" ");
+            if (parts[0].charAt(0) == 45 || !isNatural(parts[0])) {
+                printDenied(1, "","");
+                continue;
+            }
+            if (parts[0].charAt(0) == 48 && parts[0].length() == 1) {
+                System.out.println(" ");
+                System.out.println("Goodbye!");
+                System.exit(0);
+            }
+
+            if (parts.length == 1) { // case 1 number
+
+                firstNum = Long.parseLong(parts[0]);
+                System.out.println(" ");
+                System.out.println("Properties of " + firstNum);
+                System.out.println("        Buzz: " + isBuzz(firstNum));
+                System.out.println("        duck: " + isDuckNumber(firstNum));
+                System.out.println(" palindromic: " + isPalindromic(firstNum));
+                System.out.println("      gapful: " + isGap(firstNum));
+                System.out.println("         spy: " + isSpy(firstNum));
+                System.out.println("      square: " + isSquare(firstNum));
+                System.out.println("       sunny: " + isSunny(firstNum));
+                System.out.println("        even: " + isEven(firstNum));
+                System.out.println("         odd: " + !isEven(firstNum));
+                System.out.println("     jumping: " + isJump(firstNum));
+                System.out.println("       happy: " + isHappy(firstNum));
+                System.out.println("         sad: " + !isHappy(firstNum));
+            }
+
+            if (parts.length == 2) { // case 2 numbers
+
+                if (!isNatural(parts[1])) {
+                    printDenied(2, "", "");
+                    continue;
+                }
+                System.out.println(" ");
+                firstNum = Long.parseLong(parts[0]);
+                secondNum = Integer.parseInt(parts[1]);
+                for (long i = firstNum; i < firstNum + secondNum; i++) {
+                    printProp(i);
+                }
+            }
+
+
+            if (parts.length > 2 && parts.length <= 10) {  // case > 2 numbers
+
+                System.out.println("");
+                firstNum = Long.parseLong(parts[0]);
+
+                if (!isNatural(parts[1])) {
+                    printDenied(2, "", "");
+                    continue;
+                }
+                secondNum = Long.parseLong(parts[1]);
+
+                long itInt = firstNum - 1;
+                ArrayList<String> wrongProp = new ArrayList<>(); // коллекция неверных запросов
+                for (int i = 2; i < parts.length; i++) {
+                    String questOf = parts[i].toLowerCase();
+                    if (isTruePropOfNumber(itInt, questOf) == 0) {
+                        wrongProp.add(parts[i]);
+                    }
+                }
+                if (wrongProp.size() == 1) {
+                    System.out.println("");
+                    System.out.println("The property [" + wrongProp.get(0) + "] is wrong");
+                    System.out.println("Available properties: [EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, JUMPING, HAPPY, SAD]");
+                    continue;
+                }
+                if (wrongProp.size() > 1) {
+                    System.out.println("");
+                    for (int i = 0; i < wrongProp.size() - 1; i++) {
+                        System.out.print("The properties [" + wrongProp.get(i) + ", ");
+                        System.out.print(wrongProp.get(wrongProp.size() - 1));
+                        System.out.println("] are wrong");
+                        System.out.println("Available properties: [EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, JUMPING, HAPPY, SAD]");
+
+                        continue;
+                    }
+                }
+
+
+                int countOfExclusiveProp1 = 0;
+                int countOfExclusiveProp2 = 0;
+                int countOfExclusiveProp3 = 0;
+                int countOfExclusiveProp4 = 0;
+                int countOfExclusiveProp5 = 0;
+                int countOfExclusiveProp6 = 0;
+                int countOfExclusiveProp7 = 0;
+                int countOfExclusiveProp8 = 0;
+                String[] oddEven  = {"odd", "even"};
+                String[] squareSunny  = {"square", "sunny"};
+                String[] spyDuck  = {"spy", "duck"};
+                String[] noOddAndEven  = {"-odd", "-even"};
+                String[] noOddNoODD  = {"-odd", "odd"};
+                String[] noEvenEven  = {"-even", "even"};
+                String[] duckNoDuck  = {"-duck", "duck"};
+                String[] spyNoSpy  = {"-spy", "spy"};
+                for (int i = 0; i < 2; i++){              //      [odd, even]
+                for (int j = 2; j < parts.length; j++) {
+                    String questOf = parts[j].toLowerCase();
+                    if (questOf.equals(oddEven[i])) {
+                        countOfExclusiveProp1 ++;
+                        break;
+                        }
+                    }
+                }
+                for (int i = 0; i < 2; i++){              //      [square, sunny]
+                    for (int j = 2; j < parts.length; j++) {
+                        String questOf = parts[j].toLowerCase();
+                        if (questOf.equals(squareSunny[i])) {
+                            countOfExclusiveProp2 ++;
+                            break;
+                        }
+                    }
+                }
+                for (int i = 0; i < 2; i++){              //      spy, duck
+                    for (int j = 2; j < parts.length; j++) {
+                        String questOf = parts[j].toLowerCase();
+                        if (questOf.equals(spyDuck[i])) {
+                            countOfExclusiveProp3 ++;
+                            break;
+                        }
+                    }
+                }
+                for (int i = 0; i < 2; i++){              //      [-odd, -even]
+                    for (int j = 2; j < parts.length; j++) {
+                        String questOf = parts[j].toLowerCase();
+                        if (questOf.equals(noOddAndEven[i])) {
+                            countOfExclusiveProp4 ++;
+                            break;
+                        }
+                    }
+                }
+                for (int i = 0; i < 2; i++){              //      [-odd, -even]
+                    for (int j = 2; j < parts.length; j++) {
+                        String questOf = parts[j].toLowerCase();
+                        if (questOf.equals(noOddNoODD[i])) {
+                            countOfExclusiveProp5 ++;
+                            break;
+                        }
+                    }
+                }
+                for (int i = 0; i < 2; i++){              //      [-odd, -even]
+                    for (int j = 2; j < parts.length; j++) {
+                        String questOf = parts[j].toLowerCase();
+                        if (questOf.equals(noEvenEven[i])) {
+                            countOfExclusiveProp6 ++;
+                            break;
+                        }
+                    }
+                }
+                for (int i = 0; i < 2; i++){              //      [-odd, -even]
+                    for (int j = 2; j < parts.length; j++) {
+                        String questOf = parts[j].toLowerCase();
+                        if (questOf.equals(duckNoDuck[i])) {
+                            countOfExclusiveProp7 ++;
+                            break;
+                        }
+                    }
+                }
+                for (int i = 0; i < 2; i++){              //      [-odd, -even]
+                    for (int j = 2; j < parts.length; j++) {
+                        String questOf = parts[j].toLowerCase();
+                        if (questOf.equals(spyNoSpy[i])) {
+                            countOfExclusiveProp8 ++;
+                            break;
+                        }
+                    }
+                }
+
+
+
+                if (countOfExclusiveProp1  == 2){
+                    System.out.println("The request contains mutually exclusive properties: [odd, even]");
+                    System.out.println("There are no numbers with these properties.");
+                    continue;
+                }
+
+                if (countOfExclusiveProp2 == 2) {
+                    System.out.println("The request contains mutually exclusive properties: [square, sunny]");
+                    System.out.println("There are no numbers with these properties.");
+                    continue;
+                }
+                if (countOfExclusiveProp3 == 2) {
+                    System.out.println("The request contains mutually exclusive properties: [spy, duck]");
+                    System.out.println("There are no numbers with these properties.");
+                    continue;
+                }
+                if (countOfExclusiveProp4 == 2) {
+                    System.out.println("The request contains mutually exclusive properties: [-odd, -even]");
+                    System.out.println("There are no numbers with these properties.");
+                    continue;
+                }
+                if (countOfExclusiveProp5== 2) {
+                    System.out.println("The request contains mutually exclusive properties: [-odd, odd]");
+                    System.out.println("There are no numbers with these properties.");
+                    continue;
+                }
+                if (countOfExclusiveProp6== 2) {
+                    System.out.println("The request contains mutually exclusive properties: [-even, even]");
+                    System.out.println("There are no numbers with these properties.");
+                    continue;
+                }
+                if (countOfExclusiveProp7== 2) {
+                    System.out.println("The request contains mutually exclusive properties: [-duck, duck]");
+                    System.out.println("There are no numbers with these properties.");
+                    continue;
+                }
+                if (countOfExclusiveProp8== 2) {
+                    System.out.println("The request contains mutually exclusive properties: [-spy, spy]");
+                    System.out.println("There are no numbers with these properties.");
+                    continue;
+                }
+
+
+                boolean bub;
+                for (int i = 0; i < secondNum; i++) {
+                    do {
+                        itInt++;
+                        //System.out.println(itInt);
+                        bub = true;
+                        for (int j = 2; j < parts.length; j++) {
+                            String questOf = parts[j].toLowerCase();
+                            if (isTruePropOfNumber(itInt, questOf) == -1) {
+                                bub = false;
+                                break;
+                            }
+                        }
+                    } while (bub == false);
+                    printProp(itInt);
+                }
+            }
+
+            if (parts.length > 10) { printDenied(parts.length, "", "");}
+
+
+        } while (stopB);
+    }
+
+
+    public static int isTruePropOfNumber(long varLong, String varString ) {
+        int prop = -1;
+        switch (varString) {
+            case "buzz" : if (isBuzz(varLong)) prop = 1;
+                break;
+            case "-buzz" : if (!isBuzz(varLong)) prop = 1;
+                break;
+            case "duck" : if (isDuckNumber(varLong)) prop = 1;
+                break;
+            case "-duck" : if (!isDuckNumber(varLong)) prop = 1;
+                break;
+            case "palindromic" : if (isPalindromic(varLong)) prop = 1;
+                break;
+            case "-palindromic" : if (!isPalindromic(varLong)) prop = 1;
+                break;
+            case "gapful" : if (isGap(varLong)) prop = 1;
+                break;
+            case "-gapful" : if (!isGap(varLong)) prop = 1;
+                break;
+            case "spy" : if (isSpy(varLong)) prop = 1;
+                break;
+            case "-spy" : if (!isSpy(varLong)) prop = 1;
+                break;
+            case "even" : if (isEven(varLong)) prop = 1;
+                break;
+            case "-even" : if (isEven(varLong)) break;
+            case "odd" : if (!isEven(varLong)) prop = 1;
+                break;
+            case "-odd" : if (isEven(varLong)) prop = 1;
+                break;
+            case "square" : if (isSquare(varLong)) prop = 1;
+                break;
+            case "-square" : if (!isSquare(varLong))
+                prop = 1;
+                break;
+            case "sunny" : if (isSunny(varLong)) prop = 1;
+                break;
+            case "-sunny" : if (!isSunny(varLong))
+                prop = 1;
+                break;
+            case "jumping" : if (isJump(varLong)) prop = 1;
+                break;
+            case "-jumping" : if (!isJump(varLong)) prop = 1;
+                break;
+            case "happy" : if (isHappy(varLong)) prop = 1;
+                break;
+            case "-happy" : if (!isHappy(varLong)) prop = 1;
+                break;
+            case "sad" : if (!isHappy(varLong)) prop = 1;
+                break;
+            case "-sad" : if (isHappy(varLong)) prop = 1;
+                break;
+
+            default:
+                prop = 0;
+        }
+        return prop;
+    }
+
+    public static boolean isSunny(long itVar) {
+        return Math.sqrt(itVar + 1) % 1 == 0;
+    }
+
+    public static boolean isSquare(long itVar) {
+        return Math.sqrt(itVar) % 1 == 0;
+    }
+
+    public static boolean isBuzz(long itVar) {
+        return itVar % 7 == 0 || itVar % 10 == 7;
+    }
+
+    public static boolean isDuckNumber(long itVar) {
+        String duckStr = Long.toString(itVar);
+        boolean duckNumber = false;
+        for (int i = 0; i < duckStr.length(); i++) {
+            if (duckStr.charAt(i) == 48 && i > 0) {
+                duckNumber = true;
+                break;
+            }
+        }
+        return duckNumber;
+    }
+
+    public static boolean isPalindromic(long itVar) {
+        boolean palindromic = true;
+        int vaLength;
+        String palStr = Long.toString(itVar);
+        if (palStr.length() == 1) {
+            vaLength = 1;
+        } else {
+            vaLength = palStr.length() / 2;
+        }
+        for (int i = 0; i < vaLength; i++) {
+            if ((int) palStr.charAt(i) != (int) palStr.charAt(palStr.length() - i - 1)) {
+                palindromic = false;
+                break;
+            }
+        }
+        return palindromic;
+    }
+
+    public static boolean isEven(Long itVar) {
+        return itVar % 2 == 0;
+    }
+
+    public static boolean isGap(Long itVar) {
+        String gapStr = Long.toString(itVar);
+        if (gapStr.length() > 2) {
+            int itDiv = Character.getNumericValue(gapStr.charAt(0)) * 10 +
+                    Character.getNumericValue(gapStr.charAt(gapStr.length() - 1));
+            return itVar % itDiv == 0;
+        } else return false;
+    }
+
+    public static boolean isNatural(String itVar) {
+        boolean isNatural = true;
+        for (int i = 0; i < itVar.length(); i++) {   // проверка на natural
+            if ((int) itVar.charAt(i) < 48 || (int) itVar.charAt(i) > 57) {
+                isNatural = false;
+                break;
+            }
+        }
+        return isNatural;
+    }
+
+    public static boolean isSpy(Long itVar) {
+        String spyStr = Long.toString(itVar);
+        int sumTem = 0;
+        int mulTem = 1;
+        for (int i = 0; i < spyStr.length(); i++) {   // проверка на natural
+            sumTem += Character.getNumericValue(spyStr.charAt(i));
+            mulTem *= Character.getNumericValue(spyStr.charAt(i));
+        }
+        return sumTem == mulTem;
+    }
+
+    public static boolean isJump(Long itVar) {
+        String jumpStr = Long.toString(itVar);
+        Long ten = itVar;
+        boolean isJump = true;
+        for (int i = 1; i < jumpStr.length(); i++) {   // проверка на Jump
+            if (Math.abs((int)jumpStr.charAt(i) - (int)jumpStr.charAt(i-1)) > 1 ||
+               (int)jumpStr.charAt(i) == (int)jumpStr.charAt(i-1) ) {
+               isJump = false;
+               break;
+            }
+        }
+        return isJump;
+    }
+
+    public static long sumOfSquareDigits(Long itVar) {
+        long inter =  itVar;
+        String Number = Long.toString(itVar);
+        long sum = 0;
+        int end = 0;
+        while (inter > 0){
+            end = (int) (inter%10);
+            sum = sum + end*end;
+            inter = inter/10;
+        }
+        return sum;
+    }
+
+
+    public static boolean isHappy(Long itVar) {
+        String happyString;
+        long inter = itVar;
+        boolean Happy = false;
+        do {
+           inter = sumOfSquareDigits(inter);
+           happyString = Long.toString(inter);
+        } while (happyString.length() > 1);
+        if (inter == 1) Happy = true;
+        return Happy;
+    }
+
+    static void printDenied(int itVar, String first, String second) {
+            System.out.println(" ");
+        switch (itVar) {
+            case 1:
+                System.out.println("The first parameter should be a natural number or zero.");
+                break;
+            case 2:
+                System.out.println("The second parameter should be a natural number");
+                break;
+            case 3:
+                System.out.println("The request contains mutually exclusive properties: [" + first.toUpperCase() +
+                        ", " + second.toUpperCase() + "]");
+                System.out.println("There are no numbers with these properties.");
+                break;
+
+            default:
+            System.out.println("must be 1 - 10 position of ask");
+            }
+            System.out.println(" ");
+            System.out.print("Enter a request: ");
+    }
+    static void printProp(Long itVar) {
+        System.out.print(itVar + " is ");
+        System.out.print(isEven(itVar) ? "even, " : "odd, ");
+        System.out.print(isBuzz(itVar) ? "buzz, " : "");
+        System.out.print(isDuckNumber(itVar) ? "duck, " : "");
+        System.out.print(isPalindromic(itVar) ? "palindromic, " : "");
+        System.out.print(isGap(itVar) ? "gapful, " : "");
+        System.out.print(isSpy(itVar) ? "spy, ": "");
+        System.out.print(isSquare(itVar) ? "square, " : "");
+        System.out.print(isSunny(itVar) ? "sunny, " : "");
+        System.out.print(isJump(itVar) ? "jumping, " : "");
+        System.out.print(isHappy(itVar) ? "happy" : "");
+        System.out.print(!isHappy(itVar) ? "sad" : "");
+        System.out.println("");
+    }
+}
